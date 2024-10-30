@@ -24,7 +24,7 @@ pip install pyg_lib torch_scatter torch_sparse torch_cluster torch_spline_conv -
 
 ## 3. Running Hi-GMAE
 
-### 3-1. Running unsupervised graph classification:
+#### 3-1. Running unsupervised graph classification:
 
 ```
 conda activate himae
@@ -36,7 +36,7 @@ sh ./scripts/collab.sh
 sh ./scripts/dd.sh 
 ```
 
-### 3-2. Running transfer learning on molecular classification task:
+#### 3-2. Running transfer learning on molecular classification task:
 
 ```
 conda activate himae
@@ -48,7 +48,7 @@ i.e. finetune on BACE
 sh ./scripts/bace.sh
 ```
 
-### 3-3. Running transfer learning on regression task:
+#### 3-3. Running transfer learning on regression task:
 
 ```
 conda activate himae
@@ -60,7 +60,7 @@ sh ./scripts/qm9.sh
 
 ## 4. Experimental Settings
 
-### 4-1. Unsupervised Learning
+#### 4-1. Unsupervised Learning
 
 **Parameter Settings.**  We use Adam optimizer with $\beta_1 = 0.9$, $\beta_2 = 0.999$, $\epsilon = 1e-8$. Additionally, we use PReLU as our nonlinear activation function. To minimize the introduction of excessive hyper-parameters, we choose to fix the hidden size as 512, coarsening method as JC, recovery epoch as one-quarter of the maximum epoch, and decay ratio as 1.0. For other hyper-parameter selections, we search the coarsening layer in the set $\{2, 3\}$, coarse ratio in the set $\{0.1, 0.2,..., 0.5\}$, and mask ratio in the set $\{0.1, 0.2,..., 0.6\}$.
 
@@ -78,7 +78,7 @@ sh ./scripts/qm9.sh
 | Pooling Ratio  |   0.1    |   0.5   |  0.2   |   0.1   |     0.4     |   0.3   |  0.25   |   0.4   |  0.2   |
 | Recovery Ratio |   0.8    |   0.2   |  0.5   |   0.0   |     0.0     |   0.0   |   0.0   |   0.0   |  0.7   |
 
-### 4-2. Transfer Learning for classification
+#### 4-2. Transfer Learning for classification
 
 **Parameter Settings.**  In transfer learning, the CoFi-R strategy is not applied due to the significant time consumption associated with parameter tuning. For the pre-training, we fix the coarsening layer at 2, mask ratio at 0.25, learning rate at 0.001, batch size at 256, and embedding size at 300. We search the coarsening ratio in the set $\{0.25, 0.5, 0.75\}$. For the fine-tuning, we fix the coarsening layer and learning rate the same as pre-training, and dropout ratio at 0.5. Besides, we search the coarsening ratio from 0.1 to 0.9, and batch size in $\{32, 64\}$.
 
@@ -89,7 +89,7 @@ sh ./scripts/qm9.sh
 | Batch size   |  32  |  32   |   32    |  32   |   32    |  32  |  32  |  32  |
 | Pooling Rate | 0.8  |  0.8  |   0.8   |  0.4  |   0.1   | 0.6  | 0.5  | 0.9  |
 
-### 4-3. Transfer Learning for regression
+#### 4-3. Transfer Learning for regression
 
 **Parameter Settings.** In the pre-training phase, we use the same settings as in the classification task. For fine-tuning, we keep the coarsening layer and learning rate consistent with those used in pre-training and set the dropout rate to 0.5. Additionally, we search for the optimal coarsening ratio within the range of 0.1 to 0.9, and we set the batch size following the approach outlined in SimSGT.
 
@@ -133,7 +133,7 @@ sh ./scripts/qm9.sh
 3. Dataset for molecular property prediction can be found [here](https://snap.stanford.edu/gnn-pretrain/data/chem_dataset.zip). After downloading, unzip it and put it in `transfer_learning/datasets`
 
 
-## 7. Acknowledgment
+## 7. Acknowledgments
 
 Hi-GMAE is built using [PyG](https://www.pyg.org/) and [GraphMAE](https://github.com/THUDM/GraphMAE/tree/main). 
 
