@@ -46,10 +46,19 @@ i.e. finetune on BACE
 sh ./scripts/bace.sh
 ```
 
+Running transfer learning on regression task:
+
+```
+conda activate himae
+cd transfer_learning
+i.e. finetune on QM9
+sh ./scripts/qm9.sh
+```
+
 Supported datasets:
 
 - TUDataset: `NCI1`, `PROTEINS`, `D&D`, `IMDB-BINARY`, `IMDB-MULTI`, `COLLAB`, `REDDIT-BINARY`
-- MoleculeNet: `BBBP`, `Tox21`, `ToxCast`, `SIDER`, `ClinTox`, `MUV`, `HIV`, `BACE`,`Malaria` `CEP` 
+- MoleculeNet: `BBBP`, `Tox21`, `ToxCast`, `SIDER`, `ClinTox`, `MUV`, `HIV`, `BACE`, `Malaria`, `CEP` 
 - Quantum Machine: `QM7`,`QM8`,`QM9` 
 
 ### Baselines
@@ -77,7 +86,7 @@ Hi-GMAE is built using [PyG](https://www.pyg.org/) and [GraphMAE](https://github
 
 ## Experimental Settings
 
-#### Unsupervised Learning
+#### 1. Unsupervised Learning
 
 **Parameter Settings.**  We use Adam optimizer with $\beta_1 = 0.9$, $\beta_2 = 0.999$, $\epsilon = 1e-8$. Additionally, we use PReLU as our nonlinear activation function. To minimize the introduction of excessive hyper-parameters, we choose to fix the hidden size as 512, coarsening method as JC, recovery epoch as one-quarter of the maximum epoch, and decay ratio as 1.0. For other hyper-parameter selections, we search the coarsening layer in the set $\{2, 3\}$, coarse ratio in the set $\{0.1, 0.2,..., 0.5\}$, and mask ratio in the set $\{0.1, 0.2,..., 0.6\}$.
 
@@ -95,14 +104,19 @@ Hi-GMAE is built using [PyG](https://www.pyg.org/) and [GraphMAE](https://github
 | Pooling Ratio  |   0.1    |   0.5   |  0.2   |   0.1   |     0.4     |   0.3   |  0.25   |   0.4   |  0.2   |
 | Recovery Ratio |   0.8    |   0.2   |  0.5   |   0.0   |     0.0     |   0.0   |   0.0   |   0.0   |  0.7   |
 
-#### Transfer Learning
+#### 2. Transfer Learning
 
 **Parameter Settings.**  In transfer learning, the CoFi-R strategy is not applied due to the significant time consumption associated with parameter tuning. For the pre-training, we fix the coarsening layer at 2, mask ratio at 0.25, learning rate at 0.001, batch size at 256, and embedding size at 300. We search the coarsening ratio in the set $\{0.25, 0.5, 0.75\}$. For the fine-tuning, we fix the coarsening layer and learning rate the same as pre-training, and dropout ratio at 0.5. Besides, we search the coarsening ratio from 0.1 to 0.9, and batch size in $\{32, 64\}$. 
 
 **Training Details.**  In transfer learning, we adopt a five-layer GIN as the encoder in the fine-grained layer and a single-layer GT in the coarse-grained layer. For the decoder selection, we employ a single GIN layer at each level. We pre-train the model for 100 epochs. For evaluation, the downstream datasets are split into 80/10/10% for train/validation/test using scaffold-split. We report ROC-AUC scores using ten different random seeds.
 
 | Dataset      | BBBP | Tox21 | ToxCast | SIDER | ClinTox | MUV  | HIV  | BACE |
-| ------------ | ---- | ----- | ------- | ----- | ------- | ---- | ---- | ---- |
-| Batch size   | 32   | 32    | 32      | 32    | 32      | 32   | 32   | 32   |
-| Pooling Rate | 0.8  | 0.8   | 0.8     | 0.4   | 0.1     | 0.6  | 0.5  | 0.9  |
+| ------------ | :--: | :---: | :-----: | :---: | :-----: | :--: | :--: | :--: |
+| Batch size   |  32  |  32   |   32    |  32   |   32    |  32  |  32  |  32  |
+| Pooling Rate | 0.8  |  0.8  |   0.8   |  0.4  |   0.1   | 0.6  | 0.5  | 0.9  |
+
+| Dataset      | CEP  | Malaria | QM7  | QM8  | QM9  |
+| ------------ | :--: | :-----: | :--: | :--: | :--: |
+| Batch size   |  32  |   32    |  32  |  32  | 256  |
+| Pooling Rate | 0.5  |   0.1   | 0.3  | 0.3  | 0.1  |
 
