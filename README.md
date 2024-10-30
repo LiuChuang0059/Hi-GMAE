@@ -104,16 +104,22 @@ Hi-GMAE is built using [PyG](https://www.pyg.org/) and [GraphMAE](https://github
 | Pooling Ratio  |   0.1    |   0.5   |  0.2   |   0.1   |     0.4     |   0.3   |  0.25   |   0.4   |  0.2   |
 | Recovery Ratio |   0.8    |   0.2   |  0.5   |   0.0   |     0.0     |   0.0   |   0.0   |   0.0   |  0.7   |
 
-#### 2. Transfer Learning
+#### 2. Transfer Learning for classification
 
 **Parameter Settings.**  In transfer learning, the CoFi-R strategy is not applied due to the significant time consumption associated with parameter tuning. For the pre-training, we fix the coarsening layer at 2, mask ratio at 0.25, learning rate at 0.001, batch size at 256, and embedding size at 300. We search the coarsening ratio in the set $\{0.25, 0.5, 0.75\}$. For the fine-tuning, we fix the coarsening layer and learning rate the same as pre-training, and dropout ratio at 0.5. Besides, we search the coarsening ratio from 0.1 to 0.9, and batch size in $\{32, 64\}$. 
 
-**Training Details.**  In transfer learning, we adopt a five-layer GIN as the encoder in the fine-grained layer and a single-layer GT in the coarse-grained layer. For the decoder selection, we employ a single GIN layer at each level. We pre-train the model for 100 epochs. For evaluation, the downstream datasets are split into 80/10/10% for train/validation/test using scaffold-split. We report ROC-AUC scores using ten different random seeds.
+**Training Details.**  In transfer learning, we adopt a five-layer GIN as the encoder in the fine-grained layer and a single-layer GT in the coarse-grained layer. For the decoder selection, we employ a single GIN layer at each level. We pre-train the model for 100 epochs. For evaluation, the downstream datasets are split into 80/10/10% for train/validation/test using scaffold-split. We report ROC-AUC scores using **ten** different random seeds.
 
 | Dataset      | BBBP | Tox21 | ToxCast | SIDER | ClinTox | MUV  | HIV  | BACE |
 | ------------ | :--: | :---: | :-----: | :---: | :-----: | :--: | :--: | :--: |
 | Batch size   |  32  |  32   |   32    |  32   |   32    |  32  |  32  |  32  |
 | Pooling Rate | 0.8  |  0.8  |   0.8   |  0.4  |   0.1   | 0.6  | 0.5  | 0.9  |
+
+#### 2. Transfer Learning for regression
+
+**Parameter Settings.** In the pre-training phase, we use the same settings as in the classification task. For fine-tuning, we keep the coarsening layer and learning rate consistent with those used in pre-training and set the dropout rate to 0.5. Additionally, we search for the optimal coarsening ratio within the range of 0.1 to 0.9, and we set the batch size following the approach outlined in SimSGT.
+
+**Training Details.**  For the CEP and Malaria datasets, we pre-train the model using the GEOM dataset, while for the other datasets, we use ZINC15 for pre-training. The model is trained for 100 epochs in the pre-training phase. For evaluation, we split each downstream dataset into 80/10/10% for training, validation, and testing using scaffold splitting. RMSE and MAE scores are reported based on **three** different random seeds.
 
 | Dataset      | CEP  | Malaria | QM7  | QM8  | QM9  |
 | ------------ | :--: | :-----: | :--: | :--: | :--: |
